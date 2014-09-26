@@ -1,25 +1,16 @@
 FROM ubuntu:14.04
 MAINTAINER Sebastian Peters <koelnconcert@googlemail.com>
 
-# install packages
+# install base packages for bootstraping dev user
 ENV DEBIAN_FRONTEND noninteractive
-RUN apt-get update -y
-RUN apt-get install -y curl
-RUN apt-get install -y wget
-RUN apt-get install -y git
-RUN apt-get install -y htop
-RUN apt-get install -y vim
-RUN apt-get install -y man-db
-RUN apt-get install -y mbuffer
-RUN apt-get install -y dnsutils
-RUN apt-get install -y jq
-RUN apt-get install -y xml2
-RUN apt-get install -y moreutils
-RUN apt-get install -y pv
-RUN apt-get install -y byobu
+RUN apt-get update -y && apt-get install -y \
+  wget \ 
+  git
 
 # base config
 RUN echo "ALL	ALL = (ALL) NOPASSWD: ALL" >> /etc/sudoers
+
+# German settings
 RUN cp /usr/share/zoneinfo/Europe/Berlin /etc/localtime
 RUN locale-gen de_DE.UTF-8
 ENV LC_ALL de_DE.UTF-8
@@ -40,7 +31,21 @@ RUN rm -f install.sh
 # config dev user
 RUN sed -i -e '/^LP_HOSTNAME_ALWAYS=/ s/=0/=1/' .liquidpromptrc
 
-# start with shell
-CMD bash
+# install additional packages
+USER root
+RUN apt-get update -y && apt-get install -y \
+    byobu \
+    curl \
+    dnsutils \
+    htop \
+    jq \
+    make \
+    man-db \
+    mbuffer \
+    moreutils \
+    pv \
+    xml2 \
+    vim
 
-
+# back to dev user
+USER dev
