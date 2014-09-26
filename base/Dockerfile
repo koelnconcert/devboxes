@@ -22,7 +22,7 @@ ENV HOME /home/dev
 USER dev
 
 # install homeshick and dotfiles
-RUN curl -Ls https://raw.github.com/koelnconcert/dotfiles/master/install.sh | bash
+RUN curl -L https://raw.github.com/koelnconcert/dotfiles/master/install.sh | bash
 
 # config dev user
 RUN sed -i -e '/^LP_HOSTNAME_ALWAYS=/ s/=0/=1/' .liquidpromptrc
